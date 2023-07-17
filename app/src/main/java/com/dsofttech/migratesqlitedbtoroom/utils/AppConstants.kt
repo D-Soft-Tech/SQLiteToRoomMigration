@@ -7,4 +7,5 @@ object AppConstants {
     const val BOOK_TITLE: String = "bookTitle"
     const val BOOK_AUTHOR: String = "bookAuthor"
     const val NUM_OF_PAGES: String = "numOfPages"
+    const val DB_VERSION: Int = 2
 }

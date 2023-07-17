@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.dsofttech.migratesqlitedbtoroom.data.DbFactory
 import com.dsofttech.migratesqlitedbtoroom.data.model.Book
 import com.dsofttech.migratesqlitedbtoroom.databinding.ActivityMainBinding
 import com.dsofttech.migratesqlitedbtoroom.presentation.adapter.RvAdapter
@@ -15,6 +16,7 @@ import com.google.android.play.core.install.model.AppUpdateType
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var recyclerView: RecyclerView
+    private lateinit var dbFactory: DbFactory
     private lateinit var dbHelperClass: DbHelperClass
     private lateinit var rvAdapter: RvAdapter
     private lateinit var fab: FloatingActionButton
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.apply {
             adapter = rvAdapter
         }
+        dbFactory = DbFactory(applicationContext)
     }
 
     override fun onResume() {
@@ -38,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, AddBookActivity::class.java)
             startActivity(intent)
         }
-        val books = getAllBooks()
+        val books = fetchAllBooksRoomImpl()
         rvAdapter.updateData(books)
     }
 
@@ -52,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getAllBooks(): ArrayList<Book> {
+    private fun fetchAllBooksSQLiteOpenHelperImpl(): ArrayList<Book> {
         val booksCursor = dbHelperClass.fetchBooks()
         val books: ArrayList<Book> = arrayListOf()
         while (booksCursor.moveToNext()) {
@@ -66,4 +69,7 @@ class MainActivity : AppCompatActivity() {
         }
         return books
     }
+
+    private fun fetchAllBooksRoomImpl(): ArrayList<Book> =
+        dbFactory.bookDao.fetchBooks() as ArrayList<Book>
 }

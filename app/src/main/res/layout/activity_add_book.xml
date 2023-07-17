@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="@string/book_title"
+            android:hint="@string/book_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline" />
@@ -55,12 +55,15 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="95dp" />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
-            android:text="@string/add_book"
+            android:text="@string/add"
+            android:background="@color/purple_500"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/numberOfPages" />
