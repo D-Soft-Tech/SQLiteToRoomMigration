@@ -13,11 +13,11 @@ import com.dsofttech.migratesqlitedbtoroom.utils.AppConstants.TABLE_NAME
 data class Book(
     @ColumnInfo(name = BOOK_ID)
     @PrimaryKey(autoGenerate = true)
-    var id: Int = 0,
+    val id: Int?,
     @ColumnInfo(name = BOOK_TITLE)
-    val title: String,
+    val title: String?,
     @ColumnInfo(name = BOOK_AUTHOR)
-    val author: String,
+    val author: String?,
     @ColumnInfo(name = NUM_OF_PAGES)
-    val numOfPages: Int,
+    val numOfPages: Int?,
 )

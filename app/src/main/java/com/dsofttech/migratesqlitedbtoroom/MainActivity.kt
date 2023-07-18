@@ -12,6 +12,9 @@ import com.dsofttech.migratesqlitedbtoroom.presentation.adapter.RvAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.install.model.AppUpdateType
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -22,6 +25,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fab: FloatingActionButton
     private lateinit var appUpdateManager: AppUpdateManager
     private val updateType = AppUpdateType.IMMEDIATE
+    private val ioDispatcher = Schedulers.io()
+    private val mainThreadDispatcher = AndroidSchedulers.mainThread()
+    private val compositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,8 +47,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, AddBookActivity::class.java)
             startActivity(intent)
         }
-        val books = fetchAllBooksRoomImpl()
-        rvAdapter.updateData(books)
+        fetchAllBooksRoomImpl()
     }
 
     private fun checkForAppUpdates() {
@@ -70,6 +75,16 @@ class MainActivity : AppCompatActivity() {
         return books
     }
 
-    private fun fetchAllBooksRoomImpl(): ArrayList<Book> =
-        dbFactory.bookDao.fetchBooks() as ArrayList<Book>
+    private fun fetchAllBooksRoomImpl() {
+        compositeDisposable.add(
+            dbFactory.bookDao.fetchBooks()
+                .subscribeOn(ioDispatcher)
+                .observeOn(mainThreadDispatcher)
+                .subscribe {
+                    it?.let { books ->
+                        rvAdapter.updateData(books as ArrayList<Book>)
+                    }
+                },
+        )
+    }
 }
